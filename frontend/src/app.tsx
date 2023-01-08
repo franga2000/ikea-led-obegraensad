@@ -45,6 +45,8 @@ export const App: Component = () => {
     store?.setLeds([...new Array(256).fill(0)]);
     setTriggerClear(!triggerClear);
     wsMessage('clear');
+
+    store?.toast(`Canvas cleared`, 1000);
   };
 
   const rotate = (turnRight = false) => {
@@ -116,6 +118,8 @@ export const App: Component = () => {
                   const currentMode = e.currentTarget.value as MODE;
                   store?.setMode(currentMode);
                   sendMode(currentMode === 'draw' ? MODE.NONE : currentMode);
+
+                  store?.toast('Mode changed', 1000);
                 }}
                 value={store?.mode()}
               >
@@ -129,7 +133,12 @@ export const App: Component = () => {
                 <option value={MODE.CUSTOM}>custom</option>
               </select>
 
-              <Button onClick={() => wsMessage('persist-mode')}>
+              <Button
+                onClick={() => {
+                  wsMessage('persist-mode');
+                  store?.toast(`Current mode set as default`, 1500);
+                }}
+              >
                 set as default
               </Button>
             </div>
@@ -152,10 +161,20 @@ export const App: Component = () => {
                   <Button onClick={clear}>
                     <i class="fa-solid fa-trash"></i>
                   </Button>
-                  <Button onClick={() => wsMessage('persist')}>
+                  <Button
+                    onClick={() => {
+                      store?.toast(`Saved current state`, 1500);
+                      wsMessage('persist');
+                    }}
+                  >
                     <i class="fa-solid fa-floppy-disk"></i>
                   </Button>
-                  <Button onClick={() => wsMessage('load')}>
+                  <Button
+                    onClick={() => {
+                      store?.toast(`Saved state loaded`, 1500);
+                      wsMessage('load');
+                    }}
+                  >
                     <i class="fa-solid fa-refresh"></i>
                   </Button>
                 </>
